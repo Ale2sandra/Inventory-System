@@ -1,0 +1,318 @@
+<?php
+// Start session
+session_start();
+
+// Enable error reporting for debugging
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+	if($_SESSION['isclient']){
+		header("Location: ");	
+	}
+	
+$userIdDb = isset($_SESSION['userid']) ? $_SESSION['userid'] : '';
+$fullname = isset($_SESSION['login_session']) ? $_SESSION['login_session'] : '';
+$username = isset($_SESSION['useremail']) ? $_SESSION['useremail'] : '';
+// // Debug by outputting the values
+// echo "User ID: " . htmlspecialchars($userIdDb) . "<br>";
+// echo "Full Name: " . htmlspecialchars($fullname) . "<br>";
+
+// Check if session variables are empty
+if (empty($userIdDb)) {
+    echo "User ID is missing from the session.<br>";
+}
+if (empty($fullname)) {
+    echo "Full Name is missing from the session.<br>";
+}
+if (empty($username)) {
+    echo "User Name is missing from the session.<br>";
+}
+?> 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
+<?php include("head.php"); ?>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            text-align: center;
+        }
+        h2 {
+            color: #333;
+        }
+        .form-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        table {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 700px;
+        }
+        td {
+            padding: 10px;
+        }
+        input, textarea, select {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        input[type="submit"] {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            cursor: pointer;
+            width: auto;
+            margin-top: 20px;
+            font-weight: bold;
+        }
+        th, td {
+			text-align: left;
+		}
+    </style>
+</head>
+<body>
+<?php include("navigation.php"); ?>
+<h2 class="far fa-clipboard" style="display: inline-block; margin-right: 10px;">📑 Request Form</h2>
+    <button id="openModalBtn" class="btn btn-primary me-3"  title="Click on Show Instructions button" style="font-size: 15px; cursor: pointer; right: 80px;">ℹ️</button>
+    
+</div>
+
+
+
+
+<!-- Instructions Modal -->
+<div id="instructionsModal" class="modal" style="display:none;">
+    <div class="modal-content" style="max-width: 70%; margin: auto; padding: 25px; border-radius: 10px; background-color: #fff; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);">
+        <span id="closeModal" class="close" style="font-size: 30px; color: #333; cursor: pointer;">&times;</span>
+        <h1 style="font-size: 28px; color: #333; font-weight: bold;">Instructions</h1>
+        <p style="font-size: 16px; line-height: 1.6; color: #555;">
+           <strong> Welcome to the Request Form! Here are some guidelines to help you understand and make the most of the available features:</strong>
+        </p>
+        
+        <ul style="font-size: 16px; line-height: 1.8; color: #555;">
+            <li>An individual in need of a device communicates their request to the responsible person who manages the system.</li>
+            <li>The responsible person then submits an official request on behalf of the individual, providing details and uploading a photo of the requested product.</li>
+            <li>The <strong>"For Who"</strong> field identifies the person in need of the device, while the <strong>"Send to"</strong> field specifies the recipient who will receive the request notification via email.</li>
+            <li>Upon receipt of the notification, <strong>only</strong> the designated recipient has the authority to either approve or reject the request.</li>
+            <li>At the <strong>"Send to"</strong> field, you can choose one or more people to send the email. You can search for the person you want by using the dropdown or typing the person's name.</li>
+        <li>At the moment that you <strong>send</strong> the request you will receive a message that informs you that the request is being send successfully or it failed.</li>
+      
+    </ul>
+
+        <div style="display: flex; justify-content: space-between; flex-wrap: wrap; margin-top: 30px;">
+            <div style="width: 45%; font-size: 16px; color: #555;">
+                <h2 style="font-size: 22px; color: #333; font-weight: bold;">Closing the Modal</h2>
+                <p>You can close this instructions modal by clicking the <strong>"×"</strong> button in the top-right corner.</p>
+            </div>
+
+            <div style="width: 45%; font-size: 16px; color: #555;">
+                <h2 style="font-size: 22px; color: #333; font-weight: bold;">Additional Help</h2>
+                <p>If you have any questions or need further assistance, please refer to the documentation or contact your system administrator for more guidance.</p>
+            </div>
+        </div>
+    </div>
+</div>
+<form method="POST" enctype="multipart/form-data" action="">
+    <div class="form-container">
+        <table>
+        <tr>
+                <td><label for="item">Item:</label></td>
+                <td><input type="text" name="item" id="item" placeholder="Enter item name"></td>
+            </tr>
+            <tr>
+                <td><label for="price">Price:</label></td>
+                <td><input type="number" name="price" id="price" placeholder="Enter price"></td>
+            </tr>
+            <tr>
+                <td><label for="for_who">For Who:</label></td>
+                <td>
+                    <select name="for_who" id="for_who">
+                        <option value="">Select</option>
+                        <?php include 'api/v1/Inventory_system/fetch_fullname.php'; ?>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td><label for="quantity">Quantity:</label></td>
+                <td><input type="number" name="quantity" id="quantity" placeholder="Enter quantity"></td>
+            </tr>
+            <tr>
+                <td><label for="supplier">Supplier:</label></td>
+                <td><input type="text" name="supplier" id="supplier" placeholder="Enter supplier name"></td>
+            </tr>
+            <tr>
+                <td><label for="data">Data:</label></td>
+                <td><input type="date" name="data" id="data"></td>
+            </tr>
+            <!-- <tr> -->
+    <!-- <td><label for="from_who">From Who:</label></td> -->
+    <!-- <td> -->
+
+        <input type="hidden" name="from_who" id="from_who" value="<?php echo htmlspecialchars($fullname); ?>">
+        <input type="hidden" name="from_who_email" id="from_who_email" value="<?php echo htmlspecialchars($username); ?>">
+    <!-- </td> -->
+<!-- </tr> -->
+
+<tr>
+  <td><label for="send_to">Send To:</label></td>
+  <td>
+    <select name="send_to[]" id="send_to" class="form-control " multiple="multiple">
+      
+      <?php include 'api/v1/Inventory_system/fetch_emails.php'; ?>
+      <input type="hidden" name="send_to_id" id="send_to_id">
+
+    </select>
+  </td>
+</tr>
+<tr>
+                <td><label for="image">Image:</label></td>
+                <td><input type="file" name="image" id="image"></td>
+            </tr>
+            <tr>
+                <td><label for="comment">Comment:</label></td>
+                <td><textarea name="comment" id="comment" placeholder="Enter comment"></textarea></td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="submit-container">
+            <input type="submit" name="submit" value="Request">
+        </div>
+    </div>
+</form>
+
+          
+        
+           
+
+         
+        
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+
+<script>
+  // Initial setup to manage server performance sections visibility on page load
+window.onload = function() {
+  updatePerformanceSectionVisibility(); // Call the function to initialize visibility
+};
+// JavaScript to handle modal opening and closing
+ document.getElementById('openModalBtn').onclick = function() {
+        document.getElementById('instructionsModal').style.display = "block";
+    }
+
+    document.getElementById('closeModal').onclick = function() {
+        document.getElementById('instructionsModal').style.display = "none";
+    }
+
+    // Close modal when clicking outside of it
+    window.onclick = function(event) {
+        if (event.target == document.getElementById('instructionsModal')) {
+            document.getElementById('instructionsModal').style.display = "none";
+        }
+    }
+// Initialize Select2
+$(document).ready(function() {
+    $('#send_to').select2({
+        width: '100%',
+        placeholder: 'Select Person'
+    });
+});
+
+// Display alert messages based on success or error in URL
+window.onload = function() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const successMessage = urlParams.get('success');
+    const errorMessage = urlParams.get('error');
+
+    if (successMessage) {
+        alert(successMessage);
+    } else if (errorMessage) {
+        alert(errorMessage);
+    }
+};
+var $sendToList = $('#send_to');
+var formData = {};
+var searchFromSendTo = false;
+
+$sendToList.select2({
+    allowClear: true,
+    placeholder: "Select Person...",
+    width: '100%' // Makes the dropdown match the input width
+});
+
+
+  // Fetch users from the PHP endpoint and populate the dropdown
+  fetch('')
+        .then(response => response.json())
+        .then(data => {
+            data.forEach(user => {
+                // Create an <option> element with the userid as a data attribute
+                const option = new Option(user.fullname, user.email, false, false);
+                option.dataset.userid = user.userid; // Attach user ID as a data attribute
+                $('#send_to').append(option); // Append option to the select
+            });
+            $('#send_to').trigger('change'); // Trigger change to update Select2
+        })
+        .catch(error => console.error('Error fetching users:', error));
+
+    // Update hidden_send_to_ids with selected user IDs
+    $('#send_to').on('change', function () {
+        const selectedIds = [];
+        $(this).find('option:selected').each(function () {
+            const userId = $(this).data('userid');
+            if (userId) {
+                selectedIds.push(userId);
+            }
+        });
+        $('#send_to_id').val(selectedIds.join(',')); // Set the hidden input value
+    });
+
+
+
+    var $forWhoList = $('#for_who');
+var formData = {};
+var searchFromForWho = false;
+
+$forWhoList.select2({
+    allowClear: true,
+    placeholder: "Select Person...",
+    width: '100%' // Makes the dropdown match the input width
+});
+
+// Fetch users from the PHP endpoint and populate the dropdown
+fetch('')
+    .then(response => response.json())
+    .then(data => {
+        data.forEach(user => {
+            const option = new Option(user.fullname, user.fullname, false, false); // Create new option
+            $forWhoList.append(option); // Append option to the select
+        });
+        $forWhoList.trigger('change'); // Trigger change to update Select2
+    })
+    .catch(error => console.error('Error fetching users:', error));
+
+$(document).ready(function() {
+    // Additional event handlers and logic can be added here
+});
+
+
+</script>
+      <footer>
+        <?php include("footer.php"); ?>
+    </footer>
+</body>
+</html>
