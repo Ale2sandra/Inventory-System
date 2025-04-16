@@ -11,10 +11,10 @@ if($_SESSION['isclient']){
     header("Location: ");	
 }
 
-$userIdDb = isset($_SESSION['userid']) ? $_SESSION['userid'] : '';
-$fullname = isset($_SESSION['login_session']) ? $_SESSION['login_session'] : '';
-// $username= isset($_SESSION['useremail'];
-$username = isset($_SESSION['useremail']) ? $_SESSION['useremail'] : '';
+$userIdDb = '';
+$fullname =  '';
+
+$username =  '';
 
 // // Debug by outputting the values
 // echo "User ID: " . htmlspecialchars($userIdDb) . "<br>";
