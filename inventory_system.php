@@ -8,7 +8,7 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
 if($_SESSION['isclient']){
-    header("Location: clientbalance.php");	
+    header("Location: ");	
 }
 
 $userIdDb = isset($_SESSION['userid']) ? $_SESSION['userid'] : '';
@@ -125,7 +125,7 @@ if (empty($fullname)) {
                     </button>
                 </div>
                 <div class="modal-body">
-                <form id="editForm" action="https://billing.protech.com.al/billing-system/api/v1/Inventory_system/update_item.php" method="POST" enctype="multipart/form-data">
+                <form id="editForm" action="https://" method="POST" enctype="multipart/form-data">
                         <input type="hidden" id="editId" name="id">
                         <div class="form-group">
         <label for="editItem">Item</label>
@@ -287,10 +287,10 @@ if (empty($fullname)) {
             <?php
         
  // Database connection
- $dbHost = "localhost";
-$dbUsername = "erald";
-$dbPassword = "erald1232!";
-$dbName = "asterisk";
+ $dbHost = "";
+$dbUsername = "";
+$dbPassword = "";
+$dbName = "";
 
 // Create database connection
 $conn = new mysqli($dbHost, $dbUsername, $dbPassword, $dbName);
@@ -497,7 +497,7 @@ function openEditModal(id) {
             }
 
             $.ajax({
-                url: 'https://billing.protech.com.al/billing-system/api/v1/Inventory_system/get_item.php',
+                url: 'https://',
                 type: 'GET',
                 data: { id: id },
                 dataType: 'json',
@@ -560,7 +560,7 @@ function openEditModal(id) {
         const formData = new FormData(this); // Use FormData to handle file uploads and form data
 
         $.ajax({
-            url: 'https://billing.protech.com.al/billing-system/api/v1/Inventory_system/update_item.php',
+            url: 'https://',
             type: 'POST',
             data: formData,
             processData: false, // Prevent jQuery from processing the data
@@ -600,7 +600,7 @@ $('#saveStatusChanges').on('click', function () {
     var formData = $('#statusChangeForm').serialize();
 
     $.ajax({
-        url: 'api/v1/Inventory_system/update_status.php', // A PHP script to handle updating the status
+        url: '', // A PHP script to handle updating the status
         type: 'POST',
         data: formData,
         success: function (response) {
@@ -623,7 +623,7 @@ $(document).ready(function() {
 
         if (confirm("Are you sure you want to delete this record?")) {
             $.ajax({
-                url: 'api/v1/Inventory_system/delete.php', // Your delete handler script
+                url: '', // Your delete handler script
                 type: 'POST', // Use POST for deletion
                 data: { id: id }, // Send the ID of the record to delete
                 success: function (response) {
@@ -647,7 +647,7 @@ $(document).ready(function() {
 $('#exportButton').on('click', function() {
     // Fetch all data from the server
     $.ajax({
-        url: 'api/v1/Inventory_system/export.php', // URL of the new PHP script
+        url: '', // URL of the new PHP script
         method: 'GET',
         success: function(data) {
             // Convert the fetched data to a format suitable for XLSX
@@ -683,7 +683,7 @@ $('#exportButton').on('click', function() {
 
     // Make an AJAX request to fetch the change history
     $.ajax({
-        url: 'https://billing.protech.com.al/billing-system/api/v1/Inventory_system/change_history.php',
+        url: 'https://',
         type: 'GET',
         data: { id: itemId },
         dataType: 'json',
@@ -739,7 +739,7 @@ $('.accept-btn, .reject-btn').click(function(event) {
     button.prop('disabled', true).text('Processing...');
 
     $.ajax({
-        url: 'https://billing.protech.com.al/billing-system/api/v1/Inventory_system/update_decision.php',
+        url: 'https://',
         type: 'POST',
         dataType: 'json',
         data: { id: id, action: action },
